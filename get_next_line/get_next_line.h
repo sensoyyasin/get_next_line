@@ -10,12 +10,11 @@
 # include <unistd.h>
 # include <stdio.h>
 
-//fonksiyonlarin
 char *get_next_line(int fd);
 char *nextline(char *str);
 char *read_line(char *str);
+char *put_line(int fd, char *line);
 
-//utils -> kullanilan fonklar
 char *ft_strchr(const char *s, int c);
 char *ft_strjoin(char *s1, char *s2);
 size_t	ft_strlen(const char *s);

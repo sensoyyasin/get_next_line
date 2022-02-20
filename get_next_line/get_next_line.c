@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysensoy <ysensoy@student.42kocaeli.com.tr  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/19 18:27:42 by ysensoy           #+#    #+#             */
+/*   Updated: 2022/02/20 16:29:50 by ysensoy          ###   ########.tr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 char	*read_line(char *str)
@@ -6,12 +18,19 @@ char	*read_line(char *str)
 	int		sayac;
 	char	*yeni_str;
 
-	sayaciki = 0;
 	sayac = 0;
 	while (str[sayac] && str[sayac] != '\n')
 		sayac++;
-	yeni_str = malloc(sizeof(char) * (ft_strlen(str) - sayac));
-	sayac++; //newline ı atla
+	if (!str[sayac])
+	{
+		free(str);
+		return (NULL);
+	}
+	yeni_str = malloc(sizeof(char) * (ft_strlen(str) - sayac) + 1);
+	if (!yeni_str)
+		return (NULL);
+	sayac++;
+	sayaciki = 0;
 	while (str[sayac])
 	{
 		yeni_str[sayaciki] = str[sayac];
@@ -19,8 +38,8 @@ char	*read_line(char *str)
 		sayac++;
 	}
 	yeni_str[sayaciki] = '\0';
-	free(str); //static olarak tutulan eski deger silinir.
-	return (yeni_str); //yeni static degiskene aktarilmak üzere geri döner.
+	free(str);
+	return (yeni_str);
 }
 
 char	*nextline(char *str)
@@ -30,10 +49,10 @@ char	*nextline(char *str)
 
 	sayac = 0;
 	while (str[sayac] != '\n' && str[sayac] != '\0')
-		sayac++; //ayirman gereken karakter sayisi
-	yeni_str = malloc(sizeof(char) * sayac + 2);
-		if (!yeni_str)
-			return (0);
+		sayac++;
+	yeni_str = malloc(sizeof(char) * (sayac + 2));
+	if (!yeni_str)
+		return (0);
 	sayac = 0;
 	while (str[sayac] && str[sayac] != '\n')
 	{
@@ -45,19 +64,15 @@ char	*nextline(char *str)
 		yeni_str[sayac] = str[sayac];
 		sayac++;
 	}
-	yeni_str[sayac] = '\0'; //yeni satira kadar olan string
+	yeni_str[sayac] = '\0';
 	return (yeni_str);
 }
 
-char	*get_next_line(int fd)
+char	*put_line(int fd, char *line)
 {
-	static char	*line;
-	char		*buff;
-	char		*s;
-	int			readss;
+	char	*buff;
+	int		readss;
 
-	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (0);
 	buff = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!buff)
 		return (NULL);
@@ -68,30 +83,43 @@ char	*get_next_line(int fd)
 		if (readss < 0)
 		{
 			free(buff);
-			return (line);
+			return (NULL);
 		}
 		buff[readss] = '\0';
-		line = ft_strjoin(line, buff); //satir boşsa ilk olarak mallocla boş string yap
+		line = ft_strjoin(line, buff);
 	}
-	//free(buff);
+	free(buff);
+	return (line);
+}
+
+char	*get_next_line(int fd)
+{
+	static char	*line;
+	char		*s;
+
+	if (BUFFER_SIZE <= 0 || fd < 0)
+		return (0);
+	line = put_line(fd, line);
+	if (!line)
+		return (NULL);
 	s = nextline(line);
 	line = read_line(line);
 	return (s);
 }
-
-int main()
+/*
+int	main(void)
 {
-	int	fd;
+	int		fd;
+	char	*s;
+	int		i;
 
-	fd = open("my.txt",O_RDONLY);
-	char *s = get_next_line(fd);
-	int	i;
-
+	fd = open("my.txt", O_RDONLY);
+	s = get_next_line(fd);
 	i = 0;
-	while (i < 80)
+	while (i < 100)
 	{
 		printf("%s", s);
 		s = get_next_line(fd);
 		i++;
 	}
-}
+}*/
