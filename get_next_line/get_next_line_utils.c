@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ysensoy <ysensoy@student.42kocaeli.com.tr  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/21 11:06:09 by ysensoy           #+#    #+#             */
+/*   Updated: 2022/02/21 12:57:36 by ysensoy          ###   ########.tr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -11,7 +23,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		s1 = (char *)malloc(1);
 		s1[0] = '\0';
 	}
-	if (!s1 || !s2)
+	if (!s2)
 		return (NULL);
 	dizi = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!dizi)
@@ -27,7 +39,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (dizi);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strchr(char *s, int c)
 {
 	size_t	i;
 	size_t	a;
@@ -43,14 +55,12 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
 	size_t	a;
 
 	a = 0;
 	while (s[a] != '\0')
-	{
 		a++;
-	}
 	return (a);
 }

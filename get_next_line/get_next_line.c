@@ -6,7 +6,7 @@
 /*   By: ysensoy <ysensoy@student.42kocaeli.com.tr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:27:42 by ysensoy           #+#    #+#             */
-/*   Updated: 2022/02/20 16:29:50 by ysensoy          ###   ########.tr       */
+/*   Updated: 2022/02/21 17:26:21 by ysensoy          ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	*read_line(char *str)
 		free(str);
 		return (NULL);
 	}
-	yeni_str = malloc(sizeof(char) * (ft_strlen(str) - sayac) + 1);
+	yeni_str = malloc(sizeof(char) * (ft_strlen(str) - sayac));
 	if (!yeni_str)
 		return (NULL);
 	sayac++;
@@ -73,13 +73,12 @@ char	*put_line(int fd, char *line)
 	char	*buff;
 	int		readss;
 
-	buff = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	buff = malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!buff)
 		return (NULL);
-	readss = 1;
-	while (!ft_strchr(buff, '\n') && readss != 0)
+	readss = read(fd, buff, BUFFER_SIZE);
+	while (readss != 0)
 	{
-		readss = read(fd, buff, BUFFER_SIZE);
 		if (readss < 0)
 		{
 			free(buff);
@@ -87,6 +86,7 @@ char	*put_line(int fd, char *line)
 		}
 		buff[readss] = '\0';
 		line = ft_strjoin(line, buff);
+		readss = read(fd, buff, BUFFER_SIZE);
 	}
 	free(buff);
 	return (line);
@@ -96,15 +96,17 @@ char	*get_next_line(int fd)
 {
 	static char	*line;
 	char		*s;
-
-	if (BUFFER_SIZE <= 0 || fd < 0)
-		return (0);
-	line = put_line(fd, line);
-	if (!line)
+	
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	s = nextline(line);
-	line = read_line(line);
-	return (s);
+	line = put_line(fd, line);
+	if (line)
+	{
+		s = nextline(line);
+		line = read_line(line);
+		return (s);
+	}
+	return (0);
 }
 /*
 int	main(void)
@@ -116,7 +118,7 @@ int	main(void)
 	fd = open("my.txt", O_RDONLY);
 	s = get_next_line(fd);
 	i = 0;
-	while (i < 100)
+	while (s)
 	{
 		printf("%s", s);
 		s = get_next_line(fd);
