@@ -6,7 +6,7 @@
 /*   By: ysensoy <ysensoy@student.42kocaeli.com.tr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:27:42 by ysensoy           #+#    #+#             */
-/*   Updated: 2022/02/22 16:05:43 by ysensoy          ###   ########.tr       */
+/*   Updated: 2022/02/22 16:57:33 by ysensoy          ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 char	*read_line(char *str)
 {
-	int		sayaciki;
 	int		sayac;
+	int		sayaciki;
 	char	*yeni_str;
 
 	sayac = 0;
+	sayaciki = 0;
 	while (str[sayac] && str[sayac] != '\n')
 		sayac++;
 	if (!str[sayac])
@@ -29,16 +30,11 @@ char	*read_line(char *str)
 	yeni_str = (char *)malloc(sizeof(char) * (ft_strlen(str) - sayac + 1));
 	if (!yeni_str)
 		return (NULL);
-	sayac++; //newline ı atla
-	sayaciki = 0;
+	sayac++;
 	while (str[sayac])
-	{
-		yeni_str[sayaciki] = str[sayac];
-		sayaciki++;
-		sayac++;
-	}
+		yeni_str[sayaciki++] = str[sayac++];
 	yeni_str[sayaciki] = '\0';
-	free(str); //static olarak tutulan eski değer silinir.
+	free(str);
 	return (yeni_str);
 }
 
@@ -88,7 +84,7 @@ char	*put_line(int fd, char *line)
 			return (NULL);
 		}
 		buff[readss] = '\0';
-		line = ft_strjoin(line, buff);;
+		line = ft_strjoin(line, buff);
 	}
 	free(buff);
 	return (line);
@@ -98,7 +94,7 @@ char	*get_next_line(int fd)
 {
 	static char	*line;
 	char		*s;
-	
+
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = put_line(fd, line);
