@@ -6,7 +6,7 @@
 /*   By: ysensoy <ysensoy@student.42kocaeli.com.tr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/19 18:27:42 by ysensoy           #+#    #+#             */
-/*   Updated: 2022/02/21 17:26:21 by ysensoy          ###   ########.tr       */
+/*   Updated: 2022/02/22 16:05:43 by ysensoy          ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ char	*read_line(char *str)
 		free(str);
 		return (NULL);
 	}
-	yeni_str = malloc(sizeof(char) * (ft_strlen(str) - sayac));
+	yeni_str = (char *)malloc(sizeof(char) * (ft_strlen(str) - sayac + 1));
 	if (!yeni_str)
 		return (NULL);
-	sayac++;
+	sayac++; //newline ı atla
 	sayaciki = 0;
 	while (str[sayac])
 	{
@@ -38,7 +38,7 @@ char	*read_line(char *str)
 		sayac++;
 	}
 	yeni_str[sayaciki] = '\0';
-	free(str);
+	free(str); //static olarak tutulan eski değer silinir.
 	return (yeni_str);
 }
 
@@ -48,11 +48,13 @@ char	*nextline(char *str)
 	char	*yeni_str;
 
 	sayac = 0;
+	if (!str[sayac])
+		return (NULL);
 	while (str[sayac] != '\n' && str[sayac] != '\0')
 		sayac++;
-	yeni_str = malloc(sizeof(char) * (sayac + 2));
+	yeni_str = (char *)malloc(sizeof(char) * (sayac + 2));
 	if (!yeni_str)
-		return (0);
+		return (NULL);
 	sayac = 0;
 	while (str[sayac] && str[sayac] != '\n')
 	{
@@ -73,20 +75,20 @@ char	*put_line(int fd, char *line)
 	char	*buff;
 	int		readss;
 
-	buff = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	buff = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	if (!buff)
 		return (NULL);
-	readss = read(fd, buff, BUFFER_SIZE);
-	while (readss != 0)
+	readss = 1;
+	while (!ft_strchr(line, '\n') && readss != 0)
 	{
-		if (readss < 0)
+		readss = read(fd, buff, BUFFER_SIZE);
+		if (readss == -1)
 		{
 			free(buff);
 			return (NULL);
 		}
 		buff[readss] = '\0';
-		line = ft_strjoin(line, buff);
-		readss = read(fd, buff, BUFFER_SIZE);
+		line = ft_strjoin(line, buff);;
 	}
 	free(buff);
 	return (line);
@@ -106,7 +108,7 @@ char	*get_next_line(int fd)
 		line = read_line(line);
 		return (s);
 	}
-	return (0);
+	return (NULL);
 }
 /*
 int	main(void)

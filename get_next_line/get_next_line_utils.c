@@ -6,7 +6,7 @@
 /*   By: ysensoy <ysensoy@student.42kocaeli.com.tr  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 11:06:09 by ysensoy           #+#    #+#             */
-/*   Updated: 2022/02/21 12:57:36 by ysensoy          ###   ########.tr       */
+/*   Updated: 2022/02/22 16:01:41 by ysensoy          ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		s1[0] = '\0';
 	}
 	if (!s2)
-		return (NULL);
+		return (0);
 	dizi = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!dizi)
 		return (0);
@@ -39,25 +39,25 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (dizi);
 }
 
-char	*ft_strchr(char *s, int c)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t	i;
-	size_t	a;
+	int	i;
 
-	a = ft_strlen(s);
+	if (!s)
+		return (0);
 	i = 0;
-	while (i <= a)
+	while (s[i] != '\0')
 	{
 		if (s[i] == (char)c)
-			return ((char *)s + i);
+			return ((char *)(s + i));
 		i++;
 	}
 	return (NULL);
 }
 
-size_t	ft_strlen(char *s)
+int	ft_strlen(char *s)
 {
-	size_t	a;
+	int	a;
 
 	a = 0;
 	while (s[a] != '\0')
