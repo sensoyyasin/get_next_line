@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ysensoy <ysensoy@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/19 18:27:42 by ysensoy           #+#    #+#             */
-/*   Updated: 2022/02/25 18:41:03 by ysensoy          ###   ########.fr       */
+/*   Created: 2022/02/25 11:00:52 by ysensoy           #+#    #+#             */
+/*   Updated: 2022/02/25 17:51:20 by ysensoy          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*newlinedansonra_line(char *str)
 {
@@ -27,7 +27,7 @@ char	*newlinedansonra_line(char *str)
 		free(str);
 		return (NULL);
 	}
-	yeni_str = (char *)malloc(sizeof(char) * (ft_strlen(str) - sayac + 1));
+	yeni_str = (char *)malloc(sizeof(char) * ((ft_strlen(str) - sayac) + 1));
 	if (!yeni_str)
 		return (NULL);
 	sayac++;
@@ -66,7 +66,7 @@ char	*newlinedanonce_line(char *str)
 	return (yeni_str);
 }
 
-char	*put_line(int fd, char *line)
+char	*putline(int fd, char *line)
 {
 	char	*buff;
 	int		readss;
@@ -92,38 +92,44 @@ char	*put_line(int fd, char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*line;
+	static char	*line[4096];
 	char		*s;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = put_line(fd, line);
-	if (line)
+	line[fd] = putline(fd, line[fd]);
+	if (line[fd])
 	{
-		s = newlinedanonce_line(line);
-		line = newlinedansonra_line(line);
+		s = newlinedanonce_line(line[fd]);
+		line[fd] = newlinedansonra_line(line[fd]);
 		return (s);
 	}
 	return (NULL);
 }
-
-int	main(void)
+/*
+int main()
 {
-	int		fd;
-	char	*s;
-	int		i;
-
-	fd = open("my.txt", O_RDONLY);
-	s = get_next_line(fd);
-	i = 0;
-	while (s)
-	{
-		printf("%s", s);
-		s = get_next_line(fd);
+    int fd = open("my.txt", O_RDONLY);
+    int fd_ = open("my2.txt", O_RDONLY);
+    int fd1 = open("my3.txt", O_RDONLY);
+    int fd1_ = open("my4.txt", O_RDONLY);
+    int i;
+	int fd_arry[4];
+	fd_arry[0] = fd;
+	fd_arry[1] = fd_;
+	fd_arry[2] = fd1;
+	fd_arry[3] = fd1_;
+    char    **str;
+    str = (char **)malloc(sizeof(char*) * 15);
+    while (i < 4)
+    {
+		str[i] = get_next_line(fd_arry[i]);
+        while(str[i])
+		{
+			write(1, str[i], ft_strlen(str[i]));
+			str[i] = get_next_line(fd_arry[i]);
+		}
 		i++;
-	}
+    }
 }
-
-//yasin
-//mete
-//merhaba
+*/
